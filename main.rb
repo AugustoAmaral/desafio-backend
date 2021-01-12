@@ -1,8 +1,8 @@
 require 'date'
 require 'json'
 
-question_access_file = File.read("question_access.json")
-questions_file = File.read("questions.json")
+question_access_file = File.read('question_access.json')
+questions_file = File.read('questions.json')
 
 $question_access = JSON.parse(question_access_file)
 $questions = JSON.parse(questions_file)
@@ -13,8 +13,11 @@ A função is_date_in_range checa se a data dada está dentro do alcance e retor
     final_date | Data no formato ISO 8601     -> é a data final
     compare_date | Data no formato ISO 8601     -> é a data que vai ser checada
 DOC
-def is_date_in_range(initial_date,final_date,compare_date)
-    (DateTime.iso8601(initial_date)..DateTime.iso8601(final_date)).cover? DateTime.iso8601(compare_date)
+def is_date_in_range(initial_date, final_date, compare_date)
+  (DateTime.iso8601(initial_date)..DateTime.iso8601(final_date)).cover? DateTime
+                                                                          .iso8601(
+                                                                          compare_date
+                                                                        )
 end
 
 <<-DOC
@@ -22,14 +25,14 @@ A função get_questions_in_date retorna todas as questões acessadas no interva
 initial_date | Data no formato ISO 8601     -> é a data inicial
 final_date | Data no formato ISO 8601     -> é a data final
 DOC
-def get_questions_in_date(initial_date,final_date)
-    found_questions = []
-    $question_access.each { |question_info|
-        if (is_date_in_range(initial_date,final_date,question_info["date"]))
-            found_questions.append(question_info)
-        end
-    }
-    found_questions
+def get_questions_in_date(initial_date, final_date)
+  found_questions = []
+  $question_access.each do |question_info|
+    if (is_date_in_range(initial_date, final_date, question_info['date']))
+      found_questions.append(question_info)
+    end
+  end
+  found_questions
 end
 
 <<-DOC
@@ -38,16 +41,17 @@ questions | Hash no formato {question_id => id, date=> Data no formato ISO 8601,
 retorna um vetor tipo: [[id, times_accessed],...,[id, times_accessed]]
 DOC
 def get_summarized_questions(questions)
-    #Do the things
-    all_questions = {}
-    questions.each { |question|
-        if all_questions[question["question_id"]]
-            all_questions[question["question_id"]] = all_questions[question["question_id"]] + question["times_accessed"]
-        else 
-            all_questions[question["question_id"]] = question["times_accessed"]
-        end
-    }
-    all_questions.sort_by{ |id, value| -value }
+  #Do the things
+  all_questions = {}
+  questions.each do |question|
+    if all_questions[question['question_id']]
+      all_questions[question['question_id']] =
+        all_questions[question['question_id']] + question['times_accessed']
+    else
+      all_questions[question['question_id']] = question['times_accessed']
+    end
+  end
+  all_questions.sort_by { |id, value| -value }
 end
 
 <<-DOC
@@ -56,13 +60,14 @@ most_accessed_questions | Hash no formato {id => times_accessed,...,id => times_
 retorna uma hash tipo questões com a key times_accessed e seu valor
 DOC
 def get_questions_from_hash(most_accessed_questions)
-    # do the things
-    top_questions = []
-    $questions.each { |question_info|
-        if (most_accessed_questions.keys.include?(question_info["id"]))
-            question_info["times_accessed"] = most_accessed_questions[question_info["id"]]
-            top_questions.append(question_info)
-        end
-    }
-    top_questions
+  # do the things
+  top_questions = []
+  $questions.each do |question_info|
+    if (most_accessed_questions.keys.include?(question_info['id']))
+      question_info['times_accessed'] =
+        most_accessed_questions[question_info['id']]
+      top_questions.append(question_info)
+    end
+  end
+  top_questions
 end
