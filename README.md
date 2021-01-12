@@ -5,8 +5,9 @@
 
 ## Sobre
 
-Resolução do desafio proposto pela QConcursos
-Necessário ter RVM ou Ruby 2.7.2 instalado para executar
+Resolução do desafio proposto pela QConcursos.
+Necessário ter RVM ou Ruby 2.7.2 instalado para executar.
+Não foi utilizada nenhuma gem porque não achei ser necessário.
 
 ## Desafio
 
