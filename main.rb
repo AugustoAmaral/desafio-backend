@@ -1,7 +1,4 @@
 require 'date'
-require 'rubygems'
-gem 'activesupport', '~> 4.2', '>= 4.2.6'
-require 'active_support'
 require 'json'
 
 question_access_file = File.read("question_access.json")
@@ -17,13 +14,7 @@ A função is_date_in_range checa se a data dada está dentro do alcance e retor
     compare_date | Data no formato ISO 8601     -> é a data que vai ser checada
 DOC
 def is_date_in_range(initial_date,final_date,compare_date)
-    parsed_initial_date = Time.new(initial_date)
-    parsed_final_date = Time.new(initial_date)
-    parsed_compare_date = Time.new(compare_date)
-
-    parsed_compare_date.between?(parsed_initial_date, parsed_final_date)
-    # parsed_final_date <= parsed_compare_date && parsed_compare_date <= parsed_initial_date
-    # (parsed_initial_date..parsed_final_date).cover? parsed_compare_date
+    (DateTime.iso8601(initial_date)..DateTime.iso8601(final_date)).cover? DateTime.iso8601(compare_date)
 end
 
 <<-DOC
@@ -34,8 +25,7 @@ DOC
 def get_questions_in_date(initial_date,final_date)
     found_questions = []
     $question_access.each { |question_info|
-            if (is_date_in_range(initial_date,final_date,question_info["date"]))
-                puts question_info["date"]
+        if (is_date_in_range(initial_date,final_date,question_info["date"]))
             found_questions.append(question_info)
         end
     }
